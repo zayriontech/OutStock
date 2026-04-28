@@ -1,126 +1,423 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OutStock - Smart Inventory</title>
-    
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0f172a">
     <meta name="description" content="Aplikasi OutStock untuk manajemen barang dan hewan">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
     <link rel="apple-touch-icon" href="icon-192.svg">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-    :root {
-        --primary: #2563eb;
-        --primary-hover: #1d4ed8;
-        --bg-dark: #0f172a;
-        --card-bg: #1e293b;
-        --text-main: #f8fafc;
-        --text-muted: #94a3b8;
-        --border: #334155;
-        --success: #10b981;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-    }
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    
-    body { 
-        background-color: var(--bg-dark); 
-        color: var(--text-main); 
-        line-height: 1.6; 
-        padding: 15px; 
-        min-height: 100vh;
-        display: flex;
-        justify-content: center; 
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-    .container { 
-        width: 100%;
-        max-width: 500px; 
-        margin: 0 auto; 
-    }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
 
-    header { margin-bottom: 25px; text-align: center; padding-top: 10px; }
-    header h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.05em; margin-bottom: 5px; }
-    header p { color: var(--text-muted); font-size: 0.9rem; }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
 
-    .dashboard-grid { 
-        display: grid; 
-        grid-template-columns: 1fr 1fr; 
-        gap: 12px; 
-        margin-bottom: 25px; 
-    }
+        header {
+            margin-bottom: 25px;
+            text-align: center;
+            padding-top: 10px;
+        }
 
-    .stat-card { 
-        background: var(--card-bg); 
-        border: 1px solid var(--border); 
-        padding: 16px; 
-        border-radius: 16px; 
-        display: flex; 
-        flex-direction: column; 
-        gap: 4px; 
-    }
-    .stat-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-    .stat-value { font-size: 1.5rem; font-weight: 700; }
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 5px;
+        }
 
-    .main-layout { 
-        display: flex;
-        flex-direction: column;
-        gap: 20px; 
-    }
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
 
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 0.8rem; font-weight: 500; margin-bottom: 4px; color: var(--text-muted); }
-    input, select, textarea { width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: border 0.2s; }
-    input:focus, select:focus { border-color: var(--primary); }
-    input:read-only { opacity: 0.6; cursor: not-allowed; }
-    
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-    #imagePreview { width: 100%; max-height: 150px; border-radius: 8px; object-fit: cover; display: none; margin-top: 10px; border: 1px solid var(--border); }
-    
-    .btn { cursor: pointer; padding: 12px; border-radius: 8px; font-weight: 600; border: none; width: 100%; transition: 0.2s; font-size: 0.9rem; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); margin-top: 8px; }
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
 
-    /* Search and Filter Styles */
-    .search-box { position: relative; margin-bottom: 15px; }
-    .search-box input { padding-left: 35px; }
-    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; opacity: 0.5; }
-    .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
 
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 450px; }
-    th { padding: 10px; color: var(--text-muted); font-size: 0.65rem; text-transform: uppercase; text-align: left; border-bottom: 2px solid var(--border); }
-    td { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .main-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-    .item-container { display: flex; align-items: center; gap: 10px; }
-    .item-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; overflow: hidden; border: 1px solid var(--border); }
-    .item-name { display: block; font-weight: 600; font-size: 0.9rem; }
-    .item-code { display: block; font-size: 0.7rem; color: var(--text-muted); font-family: monospace; }
-    
-    .stock-val { font-weight: 700; color: var(--text-main); }
-    .stock-unit { font-size: 0.75rem; color: var(--text-muted); }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
 
-    .badge { padding: 4px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-    .badge-Baik { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-    .badge-Rusak { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .badge-Mati { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
 
-    .btn-lock { background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 6px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .form-group {
+            margin-bottom: 14px;
+        }
 
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 12px 24px; border-radius: 12px; display: none; z-index: 1000; font-size: 0.9rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    
-    .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-</style>
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--text-muted);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        input:read-only {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        #imagePreview {
+            width: 100%;
+            max-height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+            display: none;
+            margin-top: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .btn {
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            width: 100%;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            margin-top: 8px;
+        }
+
+        /* Search and Filter Styles */
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            padding-left: 35px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 450px;
+        }
+
+        th {
+            padding: 10px;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .item-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .item-name {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .item-code {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .stock-val {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stock-unit {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-Baik {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .badge-Rusak {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .badge-Mati {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .btn-lock {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            display: none;
+            z-index: 1000;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        /* Responsive Desktop Layout */
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+                padding: 20px;
+            }
+
+            .header-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            header {
+                margin-bottom: 0;
+                text-align: left;
+            }
+
+            .header-actions {
+                margin-bottom: 0;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+
+            .main-layout {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            #adminFormSection {
+                flex: 0 0 380px;
+                position: sticky;
+                top: 20px;
+            }
+
+            #tableSection {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .desktop-controls {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 15px;
+                align-items: center;
+            }
+
+            .desktop-controls .search-box,
+            .desktop-controls .filter-row {
+                margin-bottom: 0;
+                flex: 1;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     <div id="loader" class="loading-overlay">
@@ -147,13 +444,19 @@
     </div>
 
     <div class="container">
-        <header>
-            <h1><img src="icon-192.svg" alt="OutStock Logo" style="height: 1.2em; vertical-align: middle; margin-right: 8px; border-radius: 8px;"> OutStock</h1>
-            <p id="userStatus">Sinkronisasi Realtime Aktif</p>
-        </header>
+        <div class="header-wrapper">
+            <header>
+                <h1><img src="icon-192.svg" alt="OutStock Logo"
+                        style="height: 1.2em; vertical-align: middle; margin-right: 8px; border-radius: 8px;"> OutStock
+                </h1>
+                <p id="userStatus">Sinkronisasi Realtime Aktif</p>
+            </header>
 
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
-            <button id="authBtn" class="btn" style="width: auto; background: var(--card-bg); border: 1px solid var(--border); color: white; padding: 8px 16px;">🔐 Login Admin</button>
+            <div class="header-actions">
+                <button id="authBtn" class="btn"
+                    style="width: auto; background: var(--card-bg); border: 1px solid var(--border); color: white; padding: 8px 16px;">🔐
+                    Login Admin</button>
+            </div>
         </div>
 
         <section class="dashboard-grid">
@@ -243,7 +546,8 @@
                             <img id="imagePreview" alt="Preview">
                         </div>
                         <button type="submit" class="btn btn-primary" id="submitBtn">💾 Simpan ke Cloud</button>
-                        <button type="button" class="btn btn-outline" id="cancelBtn" style="display:none;">❌ Batalkan Edit</button>
+                        <button type="button" class="btn btn-outline" id="cancelBtn" style="display:none;">❌ Batalkan
+                            Edit</button>
                     </form>
                 </div>
             </section>
@@ -251,25 +555,27 @@
             <section id="tableSection">
                 <div class="card">
                     <div class="card-title">📊 Daftar Seluruh Barang</div>
-                    
+
                     <!-- Search & Filter Controls -->
-                    <div class="search-box">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="searchInput" placeholder="Cari nama barang atau kode...">
-                    </div>
-                    
-                    <div class="filter-row">
-                        <select id="filterCategory">
-                            <option value="all">Semua Kategori</option>
-                            <option value="Benda">Benda</option>
-                            <option value="Hewan">Hewan</option>
-                        </select>
-                        <select id="filterCondition">
-                            <option value="all">Semua Kondisi</option>
-                            <option value="Baik">Baik</option>
-                            <option value="Rusak">Rusak</option>
-                            <option value="Mati">Mati</option>
-                        </select>
+                    <div class="desktop-controls">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="searchInput" placeholder="Cari nama barang atau kode...">
+                        </div>
+
+                        <div class="filter-row">
+                            <select id="filterCategory">
+                                <option value="all">Semua Kategori</option>
+                                <option value="Benda">Benda</option>
+                                <option value="Hewan">Hewan</option>
+                            </select>
+                            <select id="filterCondition">
+                                <option value="all">Semua Kondisi</option>
+                                <option value="Baik">Baik</option>
+                                <option value="Rusak">Rusak</option>
+                                <option value="Mati">Mati</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="table-container">
@@ -331,7 +637,7 @@
             mainLayout: document.getElementById('mainLayout'),
             stockAction: document.getElementById('stockAction'),
             actionGroup: document.getElementById('actionGroup'),
-            
+
             // Search & Filter elements
             searchInput: document.getElementById('searchInput'),
             filterCategory: document.getElementById('filterCategory'),
@@ -389,8 +695,8 @@
             const condFilter = elements.filterCondition.value;
 
             filteredData = inventoryData.filter(item => {
-                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
-                                     (item.code && item.code.toLowerCase().includes(searchTerm));
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                    (item.code && item.code.toLowerCase().includes(searchTerm));
                 const matchesCat = catFilter === 'all' || item.category === catFilter;
                 const matchesCond = condFilter === 'all' || item.condition === condFilter;
 
@@ -408,8 +714,8 @@
         function renderTable() {
             elements.body.innerHTML = "";
             const isAdmin = auth.currentUser && !auth.currentUser.isAnonymous;
-            
-            if(filteredData.length === 0) {
+
+            if (filteredData.length === 0) {
                 elements.body.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--text-muted);">Tidak ada data yang cocok.</td></tr>`;
                 return;
             }
@@ -450,17 +756,17 @@
 
         elements.form.onsubmit = async (e) => {
             e.preventDefault();
-            
+
             const name = document.getElementById('itemName').value.trim();
             const category = document.getElementById('category').value;
             const condition = document.getElementById('condition').value;
             const location = document.getElementById('location').value.trim();
             const inputQty = parseInt(document.getElementById('qty').value);
             const action = elements.stockAction.value;
-            
+
             if (!isEditing) {
-                const existingItem = inventoryData.find(item => 
-                    item.name.toLowerCase() === name.toLowerCase() && 
+                const existingItem = inventoryData.find(item =>
+                    item.name.toLowerCase() === name.toLowerCase() &&
                     item.category === category &&
                     item.condition === condition &&
                     item.location.toLowerCase() === location.toLowerCase()
@@ -523,7 +829,7 @@
             elements.submitBtn.textContent = "🔄 Update";
             elements.cancelBtn.style.display = "block";
             elements.actionGroup.style.display = "none";
-            
+
             document.getElementById('editId').value = id;
             document.getElementById('itemName').value = item.name;
             elements.itemCode.value = item.code;
@@ -533,18 +839,18 @@
             document.getElementById('unit').value = item.unit;
             document.getElementById('location').value = item.location;
             document.getElementById('description').value = item.description || "";
-            if (item.image) { 
-                currentImageBase64 = item.image; 
-                elements.imgPrev.src = item.image; 
-                elements.imgPrev.style.display = 'block'; 
-            } else { 
-                elements.imgPrev.style.display = 'none'; 
+            if (item.image) {
+                currentImageBase64 = item.image;
+                elements.imgPrev.src = item.image;
+                elements.imgPrev.style.display = 'block';
+            } else {
+                elements.imgPrev.style.display = 'none';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function deleteItem(id) { 
-            if(confirm("Hapus item ini secara permanen?")) remove(ref(db, `inventory/${id}`)).then(() => showToast("Item dihapus")); 
+        function deleteItem(id) {
+            if (confirm("Hapus item ini secara permanen?")) remove(ref(db, `inventory/${id}`)).then(() => showToast("Item dihapus"));
         }
 
         function updateDashboard() {
@@ -571,9 +877,9 @@
         function showToast(msg) { elements.toast.textContent = msg; elements.toast.style.display = 'block'; setTimeout(() => elements.toast.style.display = 'none', 3000); }
         elements.imgInput.onchange = (e) => {
             const file = e.target.files[0];
-            if(!file) return;
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = (ev) => { 
+            reader.onload = (ev) => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
@@ -591,11 +897,11 @@
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    
+
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
-                    currentImageBase64 = compressedBase64; 
-                    elements.imgPrev.src = compressedBase64; 
-                    elements.imgPrev.style.display = 'block'; 
+                    currentImageBase64 = compressedBase64;
+                    elements.imgPrev.src = compressedBase64;
+                    elements.imgPrev.style.display = 'block';
                 };
                 img.src = ev.target.result;
             };
@@ -617,4 +923,5 @@
         }
     </script>
 </body>
+
 </html>
